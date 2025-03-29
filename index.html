@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>クリニックIT費用セルフチェックツール | HumanTech</title>
+<style>
+:root {
+--primary: #2c6eb2;
+--primary-dark: #1c5792;
+--secondary: #4caf50;
+--secondary-dark: #388e3c;
+--warning: #ff9800;
+--danger: #f44336;
+--light: #f8f9fa;
+--dark: #343a40;
+--gray: #6c757d;
+--white: #ffffff;
+--shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+body {
+background-color: #f5f7fa;
+color: #333;
+line-height: 1.6;
+font-size: 16px;
+}
+.container {
+max-width: 100%;
+margin: 0 auto;
+padding: 15px;
+}
+header {
+background-color: var(--primary);
+color: white;
+padding: 15px 0;
+margin-bottom: 20px;
+position: relative;
+box-shadow: var(--shadow);
+}
+.header-content {
+padding: 0 15px;
+text-align: center;
+}
+.logo {
+font-size: 22px;
+font-weight: bold;
+margin-bottom: 5px;
+}
+.tagline {
+font-size: 14px;
+opacity: 0.9;
+}
+.contact-info {
+margin-top: 10px;
+font-size: 14px;
+}
+h1 {
+color: var(--primary);
+margin-bottom: 15px;
+font-size: 22px;
+line-height: 1.3;
+}
+h2 {
+color: var(--primary);
+margin: 20px 0 10px;
+font-size: 18px;
+}
+p {
+margin-bottom: 12px;
+font-size: 15px;
+}
+.card {
+background: white;
+border-radius: 10px;
+box-shadow: var(--shadow);
+padding: 20px;
+margin-bottom: 20px;
+}
+.form-group {
+margin-bottom: 18px;
+}
+label {
+display: block;
+margin-bottom: 6px;
+font-weight: 600;
+font-size: 15px;
+}
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+width: 100%;
+padding: 12px 15px;
+border: 1px solid #ddd;
+border-radius: 8px;
+font-size: 16px;
+-webkit-appearance: none;
+appearance: none;
+box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+/* iPhoneのフォームスタイル調整 */
+input {
+-webkit-appearance: none;
+appearance: none;
+}
+/* セレクトボックスの矢印カスタマイズ */
+select {
+background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232c6eb2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+background-repeat: no-repeat;
+background-position: right 15px center;
+background-size: 15px;
+padding-right: 40px;
+}
+
+/* 数値入力フィールドの矢印を非表示 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+.btn {
+display: inline-block;
+background-color: var(--primary);
+color: white;
+padding: 15px 25px;
+border: none;
+border-radius: 8px;
+font-size: 18px;
+font-weight: 600;
+cursor: pointer;
+transition: background-color 0.3s, transform 0.1s;
+width: 100%;
+text-align: center;
+box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+.btn:active {
+transform: translateY(1px);
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.btn:hover {
+background-color: var(--primary-dark);
+}
+.btn-secondary {
+background-color: var(--secondary);
+}
+.btn-secondary:hover {
+background-color: var(--secondary-dark);
+}
+.result-section {
+display: none;
+}
+/* アニメーション */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+animation: fadeIn 0.5s ease-out forwards;
+}
+/* 入力フォームのアクティブ状態 */
+input:focus, select:focus {
+outline: none;
+border-color: var(--primary);
+box-shadow: 0 0 0 3px rgba(44, 110, 178, 0.1);
+}
+/* ステップ表示のスタイル */
+.step-indicator {
+display: flex;
+justify-content: space-between;
+margin-bottom: 20px;
+padding-bottom: 15px;
+border-bottom: 1px solid #eee;
+}
+.step {
+flex: 1;
+text-align: center;
+position: relative;
+}
+.step-number {
+width: 30px;
+height: 30px;
+line-height: 30px;
+border-radius: 50%;
+background-color: #eee;
+margin: 0 auto 5px;
+font-weight: bold;
+font-size: 14px;
+}
+.step.active .step-number {
+background-color: var(--primary);
+color: white;
+}
+.step-label {
+font-size: 12px;
+color: var(--gray);
+}
+.step.active .step-label {
+color: var(--primary);
+font-weight: 600;
+}
+/* フォーム分割表示 */
+.form-step {
+display: none;
+}
+.form-step.active {
+display: block;
+animation: fadeIn 0.3s ease-out forwards;
+}
+/* ナビゲーションボタン */
+.form-navigation {
+display: flex;
+justify-content: space-between;
+margin-top: 20px;
+}
+.btn-nav {
+min-width: 120px;
+}
+.btn-prev {
+background-color: var(--gray);
+}
+/* 入力補助 */
+.input-help {
+font-size: 12px;
+color: var(--gray);
+margin-top: 4px;
+}
+/* ヒントボタン */
+.hint-button {
+display: inline-block;
+width: 18px;
+height: 18px;
+line-height: 18px;
+text-align: center;
+background-color: #eee;
+border-radius: 50%;
+font-size: 12px;
+color: var(--gray);
+margin-left: 5px;
+cursor: pointer;
+}
+.hint-content {
+display: none;
+padding: 10px;
+background-color: #f9f9f9;
+border-radius: 5px;
+margin-top: 8px;
+font-size: 13px;
+}
+/* 進捗バー */
+.progress-container {
+width: 100%;
+height: 4px;
+background-color: #eee;
+border-radius: 2px;
+margin-bottom: 20px;
+}
+.progress-bar {
+height: 100%;
+background-color: var(--primary);
+border-radius: 2px;
+transition: width 0.3s ease;
+}
+
+/* コミュニティ向け追加スタイル */
+.info-card {
+border-left: 5px solid #4a89dc;
+}
+
+.feedback-card {
+border-left: 5px solid var(--warning);
+}
+
+.follow-section {
+margin-top: 30px;
+text-align: center;
+padding: 15px;
+background: rgba(74, 137, 220, 0.05);
+border-radius: 8px;
+}
+
+.follow-options {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 15px;
+margin-top: 15px;
+}
+
+.follow-option {
+display: flex;
+align-items: center;
+padding: 10px 15px;
+background: white;
+border-radius: 8px;
+text-decoration: none;
+color: var(--dark);
+box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+transition: transform 0.2s;
+}
+
+.follow-option:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.follow-icon {
+margin-right: 10px;
+font-size: 20px;
+}
+
+.survey-options {
+margin: 15px 0;
+}
+
+.survey-question {
+font-weight: 600;
+margin-bottom: 8px;
+}
+
+.survey-select {
+width: 100%;
+padding: 10px;
+border-radius: 5px;
+border: 1px solid #ddd;
+margin-bottom: 15px;
+}
+
+.survey-btn {
+width: auto;
+padding: 10px 20px;
+margin-bottom: 20px;
+}
+
+.optional-survey {
+margin: 25px 0;
+padding: 15px;
+background: rgba(0, 0, 0, 0.02);
+border-radius: 8px;
+}
+
+.community-insights {
+margin: 25px 0;
+padding: 15px;
+background: rgba(44, 110, 178, 0.05);
+border-radius: 8px;
+}
+
+.comparison-chart {
+margin: 15px 0;
+height: 200px;
+background: #f5f5f5;
+border-radius: 5px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--gray);
+font-style: italic;
+}
+
+.insight-note {
+font-size: 12px;
+color: var(--gray);
+margin-top: 5px;
+text-align: right;
+}
+
+.resources-section {
+margin: 25px 0;
+}
+
+.resource-items {
+display: flex;
+flex-direction: column;
+gap: 15px;
+margin-top: 15px;
+}
+
+.resource-item {
+display: flex;
+background: white;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.resource-icon {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 50px;
+background-color: rgba(44, 110, 178, 0.1);
+font-size: 20px;
+}
+
+.resource-content {
+padding: 15px;
+flex: 1;
+}
+
+.resource-content h4 {
+margin: 0 0 5px 0;
+font-size: 16px;
+}
+
+.resource-content a {
+display: inline-block;
+margin-top: 8px;
+color: var(--primary);
+text-decoration: none;
+font-weight: 600;
+font-size: 14px;
+}
+
+.resource-content a:hover {
+text-decoration: underline;
+}
+
+.recommendation-item {
+display: flex;
+margin-bottom: 15px;
+gap: 12px;
+align-items: flex-start;
+}
+
+.recommendation-icon {
+flex: 0 0 36px;
+height: 36px;
+background-color: var(--primary);
+color: white;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 16px;
+}
+
+.recommendation-content {
+flex: 1;
+}
+
+.recommendation-title {
+font-weight: 600;
+margin-bottom: 4px;
+color: var(--primary);
+font-size: 16px;
+}
+
+.btn-outline {
+background-color: transparent;
+color: var(--primary);
+border: 1px solid var(--primary);
+}
+
+.btn-outline:hover {
+background-color: rgba(44, 110, 178, 0.1);
+}
+
+.disclaimer {
+font-size: 12px;
+color: var(--gray);
+margin-top: 30px;
+text-align: center;
+}
+
+/* 結果表示関連のスタイル */
+.result-card {
+border-left: 5px solid var(--primary);
+}
+.savings-card {
+border-left: 5px solid var(--secondary);
+}
+.gauge-container {
+margin: 25px 0;
+text-align: center;
+}
+.gauge {
+width: 180px;
+height: 90px;
+margin: 0 auto;
+position: relative;
+overflow: hidden;
+border-bottom-left-radius: 90px;
+border-bottom-right-radius: 90px;
+}
+.gauge-background {
+width: 100%;
+height: 100%;
+background: #e6e6e6;
+}
+.gauge-fill {
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, #4caf50, #ffc107, #f44336);
+transform-origin: top center;
+transform: rotate(180deg);
+transition: transform 1s ease-out;
+}
+.gauge-cover {
+width: 162px;
+height: 81px;
+background: white;
+border-bottom-left-radius: 81px;
+border-bottom-right-radius: 81px;
+position: absolute;
+top: 9px;
+left: 9px;
+}
+.gauge-value {
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+text-align: center;
+font-size: 22px;
+font-weight: bold;
+color: var(--dark);
+}
+.gauge-label {
+margin-top: 8px;
+font-weight: 600;
+font-size: 14px;
+}
+.benchmark-comparison {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin: 20px 0;
+}
+.benchmark-item {
+text-align: center;
+padding: 15px;
+border-radius: 8px;
+background: rgba(0, 0, 0, 0.03);
+}
+.benchmark-label {
+font-size: 13px;
+color: var(--gray);
+margin-bottom: 5px;
+}
+.benchmark-value {
+font-size: 22px;
+font-weight: bold;
+color: var(--dark);
+}
+.benchmark-diff {
+font-size: 13px;
+margin-top: 5px;
+}
+.savings-amount {
+font-size: 28px;
+font-weight: bold;
+color: var(--secondary);
+text-align: center;
+margin: 25px 0;
+line-height: 1.3;
+}
+.savings-details {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 15px;
+}
+.savings-item {
+padding: 15px;
+background: rgba(76, 175, 80, 0.1);
+border-radius: 8px;
+}
+.savings-item-title {
+font-weight: 600;
+margin-bottom: 6px;
+font-size: 15px;
+}
+/* 結果のリスト表示 */
+#cost-analysis-list {
+list-style-type: none;
+padding: 0;
+margin: 15px 0;
+}
+#cost-analysis-list li {
+padding: 10px;
+margin-bottom: 8px;
+background-color: rgba(44, 110, 178, 0.05);
+border-radius: 5px;
+font-size: 14px;
+}
+</style>
+</head>
+<body>
+<!-- ヘッダー -->
+<header>
+<div class="header-content">
+<div>
+<div class="logo">HumanTech</div>
+<div class="tagline">技術に人の血を通わせ、共に価値を創造する</div>
+</div>
+<div class="contact-info">
+<p>他業界のコスト感性を活かしながら、適正価格でのDXを目指しましょう</p>
+<p>050-1234-5678</p>
+</div>
+</div>
+</header>
+<div class="container">
+<!-- 診断ツール説明 -->
+<div class="card">
+<h1>クリニックIT費用セルフチェックツール</h1>
+<p>このツールでは、貴院のIT・通信関連コストが適正かどうかを簡単に診断できます。3分程度の入力で、同規模クリニックとの比較や潜在的な削減可能額を算出します。</p>
+<p><strong>多くのクリニックでは、適正価格と比較して平均30%以上のIT・通信コストの削減余地があるようです。</strong></p>
+</div>
+<!-- 診断フォーム（ステップ式） -->
+<div class="card">
+<!-- ステップインジケーター -->
+<div class="step-indicator">
+<div class="step active" data-step="1">
+<div class="step-number">1</div>
+<div class="step-label">基本情報</div>
+</div>
+<div class="step" data-step="2">
+<div class="step-number">2</div>
+<div class="step-label">通信費</div>
+</div>
+<div class="step" data-step="3">
+<div class="step-number">3</div>
+<div class="step-label">システム</div>
+</div>
+<div class="step" data-step="4">
+<div class="step-number">4</div>
+<div class="step-label">保守</div>
+</div>
+</div>
+<!-- 進捗バー -->
+<div class="progress-container">
+<div class="progress-bar" style="width: 25%;"></div>
+</div>
+<!-- フォームステップ1: 基本情報 -->
+<div class="form-step active" data-step="1">
+<h2>基本情報</h2>
+<div class="form-group">
+<label for="clinic-type">クリニックの種類</label>
+<select id="clinic-type">
+<option value="internal">内科</option>
+<option value="pediatrics">小児科</option>
+<option value="dermatology">皮膚科</option>
+<option value="orthopedics">整形外科</option>
+<option value="ophthalmology">眼科</option>
+<option value="dentistry">歯科</option>
+<option value="other">その他</option>
+</select>
+</div>
+<div class="form-group">
+<label for="staff-count">スタッフ数（医師・看護師・事務員等の合計）</label>
+<input type="number" id="staff-count" min="1" value="5" inputmode="numeric">
+<div class="input-help">非常勤を含めた合計人数を入力してください</div>
+</div>
+<div class="form-group">
+<label for="patient-count">1日あたりの平均患者数</label>
+<input type="number" id="patient-count" min="1" value="40" inputmode="numeric">
+</div>
+<div class="form-navigation">
+<div></div> <!-- 左側の空間（前へボタンがないため） -->
+<button class="btn btn-nav btn-next" data-next="2">次へ</button>
+</div>
+</div>
+<!-- フォームステップ2: 通信費 -->
+<div class="form-step" data-step="2">
+<h2>通信費</h2>
+<div class="form-group">
+<label for="phone-cost">固定電話関連の月額費用（円）<span class="hint-button" onclick="toggleHint('phone-hint')">?</span></label>
+<input type="number" id="phone-cost" min="0" value="20000" inputmode="numeric">
+<div class="hint-content" id="phone-hint">基本料金、通話料、FAX関連費用を含む総額</div>
+</div>
+<div class="form-group">
+<label for="internet-cost">インターネット回線の月額費用（円）</label>
+<input type="number" id="internet-cost" min="0" value="15000" inputmode="numeric">
+</div>
+<div class="form-group">
+<label for="mobile-cost">業務用携帯電話・タブレットの月額費用（円）</label>
+<input type="number" id="mobile-cost" min="0" value="25000" inputmode="numeric">
+</div>
+<div class="form-navigation">
+<button class="btn btn-nav btn-prev" data-prev="1">前へ</button>
+<button class="btn btn-nav btn-next" data-next="3">次へ</button>
+</div>
+</div>
+<!-- フォームステップ3: システム利用料 -->
+<div class="form-step" data-step="3">
+<h2>システム利用料</h2>
+<div class="form-group">
+<label for="emr-cost">電子カルテ/レセコンの月額費用（円）</label>
+<input type="number" id="emr-cost" min="0" value="80000" inputmode="numeric">
+</div>
+<div class="form-group">
+<label for="reservation-cost">予約システムの月額費用（円）</label>
+<input type="number" id="reservation-cost" min="0" value="15000" inputmode="numeric">
+</div>
+<div class="form-group">
+<label for="other-system-cost">その他システム・クラウドサービスの月額費用（円）</label>
+<input type="number" id="other-system-cost" min="0" value="10000" inputmode="numeric">
+</div>
+<div class="form-navigation">
+<button class="btn btn-nav btn-prev" data-prev="2">前へ</button>
+<button class="btn btn-nav btn-next" data-next="4">次へ</button>
+</div>
+</div>
+<!-- フォームステップ4: 保守・サポート -->
+<div class="form-step" data-step="4">
+<h2>保守・サポート</h2>
+<div class="form-group">
+<label for="maintenance-cost">IT機器・システムの保守費用（月額換算・円）<span class="hint-button" onclick="toggleHint('maintenance-hint')">?</span></label>
+<input type="number" id="maintenance-cost" min="0" value="30000" inputmode="numeric">
+<div class="hint-content" id="maintenance-hint">年間契約の場合は12で割った金額を入力</div>
+</div>
+<div class="form-group">
+<label for="security-cost">セキュリティ対策費用（月額換算・円）</label>
+<input type="number" id="security-cost" min="0" value="8000" inputmode="numeric">
+</div>
+<div class="form-navigation">
+<button class="btn btn-nav btn-prev" data-prev="3">前へ</button>
+<button id="diagnose-btn" class="btn">セルフチェックを実行</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 診断結果 -->
+<div id="result-section" class="result-section">
+<div class="card result-card animate-in">
+<h2>診断結果</h2>
+<p>貴院のIT・通信関連月額コストと、同規模・同タイプのクリニック平均との比較結果です。</p>
+
+<div class="community-insights">
+<h3>みんなの診断結果との比較</h3>
+<p>これまでに<span id="user-count">157</span>人の方がこのツールを使用しています</p>
+<div class="comparison-chart">
+<!-- チャート表示（平均削減可能額など） -->
+チャート表示エリア - 平均コスト比較
+</div>
+<p class="insight-note">※数値は診断ツール利用者の匿名データに基づきます</p>
+</div>
+
+<div class="gauge-container">
+<div class="gauge">
+<div class="gauge-background"></div>
+<div id="gauge-fill" class="gauge-fill"></div>
+<div class="gauge-cover"></div>
+<div id="gauge-value" class="gauge-value">0点</div>
+</div>
+<div class="gauge-label">コスト適正度スコア</div>
+</div>
+<div class="benchmark-comparison">
+<div class="benchmark-item">
+<div class="benchmark-label">貴院の月額コスト</div>
+<div id="your-cost" class="benchmark-value">0円</div>
+</div>
+<div class="benchmark-item">
+<div class="benchmark-label">同規模クリニック平均</div>
+<div id="average-cost" class="benchmark-value">0円</div>
+</div>
+<div class="benchmark-item">
+<div class="benchmark-label">最適化クリニック平均</div>
+<div id="optimized-cost" class="benchmark-value">0円</div>
+</div>
+</div>
+<div id="cost-analysis">
+<p>詳細な分析：</p>
+<ul id="cost-analysis-list">
+</ul>
+</div>
+</div>
+<div class="card savings-card animate-in" style="animation-delay: 0.2s">
+<h2>削減可能額の試算</h2>
+<p>当社の経験と市場データに基づき、貴院で実現可能な削減額を試算しました。</p>
+<div class="savings-amount">
+<div>年間<span id="annual-savings">0</span>円</div>
+<div>（月間<span id="monthly-savings">0</span>円）</div>
+</div>
+<div class="savings-details">
+<div class="savings-item">
+<div class="savings-item-title">通信費の削減</div>
+<div>月間 <span id="communication-savings">0</span>円</div>
+<div>現在の<span id="communication-savings-percentage">0</span>%削減可能</div>
+</div>
+<div class="savings-item">
+<div class="savings-item-title">システム利用料の削減</div>
+<div>月間 <span id="system-savings">0</span>円</div>
+<div>現在の<span id="system-savings-percentage">0</span>%削減可能</div>
+</div>
+<div class="savings-item">
+<div class="savings-item-title">保守・サポート費の削減</div>
+<div>月間 <span id="maintenance-savings">0</span>円</div>
+<div>現在の<span id="maintenance-savings-percentage">0</span>%削減可能</div>
+</div>
+</div>
+<p><strong>※この試算は同規模・同業種のクリニックでの実績に基づく参考値です。詳細な分析には個別診断が必要です。</strong></p>
+</div>
+</div>
+
+<script>
+// ヒント表示切り替え関数
+function toggleHint(hintId) {
+const hintEl = document.getElementById(hintId);
+if (hintEl.style.display === 'block') {
+hintEl.style.display = 'none';
+} else {
+hintEl.style.display = 'block';
+}
+}
+// ドキュメント読み込み完了後の処理
+document.addEventListener('DOMContentLoaded', function() {
+// ステップ切り替え
+const nextButtons = document.querySelectorAll('.btn-next');
+const prevButtons = document.querySelectorAll('.btn-prev');
+const steps = document.querySelectorAll('.step');
+const formSteps = document.querySelectorAll('.form-step');
+const progressBar = document.querySelector('.progress-bar');
+// 次へボタンのイベント
+nextButtons.forEach(button => {
+button.addEventListener('click', function() {
+const nextStep = this.getAttribute('data-next');
+// 現在のステップを非アクティブに
+document.querySelector('.form-step.active').classList.remove('active');
+document.querySelector('.step.active').classList.remove('active');
+// 次のステップをアクティブに
+document.querySelector(`.form-step[data-step="${nextStep}"]`).classList.add('active');
+document.querySelector(`.step[data-step="${nextStep}"]`).classList.add('active');
+// プログレスバーの更新
+progressBar.style.width = `${nextStep * 25}%`;
+});
+});
+// 前へボタンのイベント
+prevButtons.forEach(button => {
+button.addEventListener('click', function() {
+const prevStep = this.getAttribute('data-prev');
+// 現在のステップを非アクティブに
+document.querySelector('.form-step.active').classList.remove('active');
+document.querySelector('.step.active').classList.remove('active');
+// 前のステップをアクティブに
+document.querySelector(`.form-step[data-step="${prevStep}"]`).classList.add('active');
+document.querySelector(`.step[data-step="${prevStep}"]`).classList.add('active');
+// プログレスバーの更新
+progressBar.style.width = `${prevStep * 25}%`;
+});
+});
+
+// 診断ボタンのクリックイベント設定
+const diagnoseBtn = document.getElementById('diagnose-btn');
+if (diagnoseBtn) {
+diagnoseBtn.addEventListener('click', function() {
+performDiagnosis();
+});
+}
+});
+
+// 診断実行関数
+function performDiagnosis() {
+// 入力値の取得
+const clinicType = document.getElementById('clinic-type').value;
+const staffCount = parseInt(document.getElementById('staff-count').value) || 5;
+const patientCount = parseInt(document.getElementById('patient-count').value) || 40;
+const phoneCost = parseInt(document.getElementById('phone-cost').value) || 0;
+const internetCost = parseInt(document.getElementById('internet-cost').value) || 0;
+const mobileCost = parseInt(document.getElementById('mobile-cost').value) || 0;
+const emrCost = parseInt(document.getElementById('emr-cost').value) || 0;
+const reservationCost = parseInt(document.getElementById('reservation-cost').value) || 0;
+const otherSystemCost = parseInt(document.getElementById('other-system-cost').value) || 0;
+const maintenanceCost = parseInt(document.getElementById('maintenance-cost').value) || 0;
+const securityCost = parseInt(document.getElementById('security-cost').value) || 0;
+
+// カテゴリ別コスト計算
+const communicationCost = phoneCost + internetCost + mobileCost;
+const systemCost = emrCost + reservationCost + otherSystemCost;
+const supportCost = maintenanceCost + securityCost;
+
+// 総コスト
+const totalCost = communicationCost + systemCost + supportCost;
+
+// スタッフ1人あたりのコスト
+const costPerStaff = totalCost / staffCount;
+
+// 患者1人あたりのコスト
+const costPerPatient = totalCost / (patientCount * 20); // 月20日診療と仮定
+
+// ベンチマーク値の計算（シミュレーション用）
+const benchmark = {
+communicationCost: {
+average: staffCount * 7000 + 15000, // 平均的なクリニックの通信費
+optimized: staffCount * 5000 + 10000 // 最適化されたクリニックの通信費
+},
+systemCost: {
+average: patientCount * 1500 + 30000, // 平均的なクリニックのシステム利用料
+optimized: patientCount * 1200 + 25000 // 最適化されたクリニックのシステム利用料
+},
+supportCost: {
+average: staffCount * 5000 + 10000, // 平均的なクリニックの保守・サポート費
+optimized: staffCount * 3000 + 8000 // 最適化されたクリニックの保守・サポート費
+}
+};
+
+// 総ベンチマークコスト
+const averageCost = benchmark.communicationCost.average + benchmark.systemCost.average + benchmark.supportCost.average;
+const optimizedCost = benchmark.communicationCost.optimized + benchmark.systemCost.optimized + benchmark.supportCost.optimized;
+
+// スコア計算（1-100）
+// 最適化コストを100点、平均コストを70点、平均の1.5倍以上を0点とする
+let score = 100;
+if (totalCost > optimizedCost) {
+if (totalCost >= averageCost * 1.5) {
+score = 0;
+} else if (totalCost > averageCost) {
+score = 70 - (totalCost - averageCost) / (averageCost * 0.5) * 70;
+} else {
+score = 100 - (totalCost - optimizedCost) / (averageCost - optimizedCost) * 30;
+}
+}
+score = Math.round(score);
+
+// 削減可能額の計算
+const communicationSavings = Math.max(0, communicationCost - benchmark.communicationCost.optimized);
+const systemSavings = Math.max(0, systemCost - benchmark.systemCost.optimized);
+const maintenanceSavings = Math.max(0, supportCost - benchmark.supportCost.optimized);
+const monthlySavings = communicationSavings + systemSavings + maintenanceSavings;
+const annualSavings = monthlySavings * 12;
+
+// パーセンテージ計算
+const communicationSavingsPercentage = communicationCost > 0 ? Math.round(communicationSavings / communicationCost * 100) : 0;
+const systemSavingsPercentage = systemCost > 0 ? Math.round(systemSavings / systemCost * 100) : 0;
+const maintenanceSavingsPercentage = supportCost > 0 ? Math.round(maintenanceSavings / supportCost * 100) : 0;
+
+// ゲージの更新
+const gaugeFill = document.getElementById('gauge-fill');
+const gaugeValue = document.getElementById('gauge-value');
+gaugeFill.style.transform = `rotate(${180 - (score / 100 * 180)}deg)`;
+gaugeValue.textContent = `${score}点`;
+
+// コスト情報の更新
+document.getElementById('your-cost').textContent = `${totalCost.toLocaleString()}円`;
+document.getElementById('average-cost').textContent = `${averageCost.toLocaleString()}円`;
+document.getElementById('optimized-cost').textContent = `${optimizedCost.toLocaleString()}円`;
+
+// 削減額の更新
+document.getElementById('monthly-savings').textContent = monthlySavings.toLocaleString();
+document.getElementById('annual-savings').textContent = annualSavings.toLocaleString();
+document.getElementById('communication-savings').textContent = communicationSavings.toLocaleString();
+document.getElementById('system-savings').textContent = systemSavings.toLocaleString();
+document.getElementById('maintenance-savings').textContent = maintenanceSavings.toLocaleString();
+document.getElementById('communication-savings-percentage').textContent = communicationSavingsPercentage;
+document.getElementById('system-savings-percentage').textContent = systemSavingsPercentage;
+document.getElementById('maintenance-savings-percentage').textContent = maintenanceSavingsPercentage;
+
+// コスト分析リストの更新
+const costAnalysisList = document.getElementById('cost-analysis-list');
+costAnalysisList.innerHTML = '';
+const analyses = [];
+
+if (costPerStaff > 20000) {
+analyses.push(`スタッフ1人あたりのIT・通信コストが${Math.round(costPerStaff).toLocaleString()}円と高めです。業界平均は15,000〜20,000円程度です。`);
+}
+
+if (costPerPatient > 500) {
+analyses.push(`患者1人あたりのIT・通信コストが${Math.round(costPerPatient).toLocaleString()}円と高めです。業界平均は300〜400円程度です。`);
+}
+
+if (communicationCost > benchmark.communicationCost.average * 1.2) {
+analyses.push(`通信費が業界平均より${Math.round((communicationCost - benchmark.communicationCost.average) / benchmark.communicationCost.average * 100)}%高くなっています。携帯電話・タブレット費用の見直しが効果的です。`);
+}
+
+if (systemCost > benchmark.systemCost.average * 1.2) {
+analyses.push(`システム利用料が業界平均より${Math.round((systemCost - benchmark.systemCost.average) / benchmark.systemCost.average * 100)}%高くなっています。電子カルテやレセコンの契約内容の見直しができます。`);
+}
+
+if (supportCost > benchmark.supportCost.average * 1.2) {
+analyses.push(`保守・サポート費用が業界平均より${Math.round((supportCost - benchmark.supportCost.average) / benchmark.supportCost.average * 100)}%高くなっています。複数ベンダーへの重複した支払いがないか確認が必要です。`);
+}
+
+// 分析結果がない場合
+if (analyses.length === 0) {
+analyses.push(`貴院のIT・通信コストは比較的適正な範囲内ですが、さらなる最適化の余地があります。`);
+}
+
+// 分析リストの表示
+analyses.forEach(analysis => {
+const li = document.createElement('li');
+li.textContent = analysis;
+costAnalysisList.appendChild(li);
+});
+
+// 推奨事項の生成
+createRecommendations(communicationSavings, systemSavings, maintenanceSavings, communicationSavingsPercentage, systemSavingsPercentage, maintenanceSavingsPercentage, phoneCost, staffCount);
+
+// 結果セクションを表示
+const resultSection = document.getElementById('result-section');
+resultSection.style.display = 'block';
+
+// 結果セクションへスクロール
+resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// 推奨事項の生成を、より情報提供型に変更
+function createRecommendations(communicationSavings, systemSavings, maintenanceSavings, communicationSavingsPercentage, systemSavingsPercentage, maintenanceSavingsPercentage, phoneCost, staffCount) {
+// 推奨事項カードが存在しなければ作成
+let recommendationsCard = document.querySelector('.info-card');
+if (!recommendationsCard) {
+const resultSection = document.getElementById('result-section');
+recommendationsCard = document.createElement('div');
+recommendationsCard.className = 'card info-card animate-in';
+recommendationsCard.style.animationDelay = '0.4s';
+const title = document.createElement('h2');
+title.textContent = 'コスト最適化のヒント';
+recommendationsCard.appendChild(title);
+const recommendationsDiv = document.createElement('div');
+recommendationsDiv.className = 'recommendations';
+const recommendationsList = document.createElement('div');
+recommendationsList.id = 'recommendations-list';
+recommendationsDiv.appendChild(recommendationsList);
+recommendationsCard.appendChild(recommendationsDiv);
+resultSection.appendChild(recommendationsCard);
+}
+
+// 推奨事項リストをクリア
+const recommendationsList = document.getElementById('recommendations-list');
+recommendationsList.innerHTML = '';
+
+// 推奨事項の生成（情報提供型表現）
+const recommendations = [];
+
+if (communicationSavings > 10000) {
+recommendations.push({
+title: '通信費の最適化ポイント',
+content: `多くのクリニックでは、通信費を${communicationSavingsPercentage}%程度削減できる可能性があります。IP電話への移行や契約プランの見直しが効果的です。`
+});
+}
+
+if (systemSavings > 20000) {
+recommendations.push({
+title: 'システム利用料の見直しポイント',
+content: `電子カルテ・レセコンなどのシステム利用料は、未使用機能の見直しやクラウド移行により、平均${systemSavingsPercentage}%の削減事例があります。`
+});
+}
+
+if (maintenanceSavings > 10000) {
+recommendations.push({
+title: '保守・サポート体制の最適化ポイント',
+content: `多くのクリニックでは、重複した保守契約やオーバースペックなサポートプランの見直しで、${maintenanceSavingsPercentage}%程度の削減が可能です。`
+});
+}
+
+if (phoneCost > 15000) {
+recommendations.push({
+title: 'IP電話活用のヒント',
+content: '固定電話からIP電話への移行は、通話料金の大幅削減だけでなく、複数拠点間の無料通話など業務効率化にも効果的です。'
+});
+}
+
+if (recommendations.length === 0) {
+recommendations.push({
+title: '定期的な見直しのススメ',
+content: 'IT・通信コストは、年に一度の定期的な見直しが効果的です。技術の進化や料金プランの変更を確認することで、さらなる最適化が可能です。'
+});
+}
+
+// 共通の情報提供を追加
+recommendations.push({
+title: '知っておきたい最新動向',
+content: '2024年は通信キャリアの料金プラン改定やクラウド型電子カルテの普及により、IT・通信コスト構造が大きく変化しています。最新情報をチェックすることが重要です。'
+});
+
+// 推奨事項の表示
+recommendations.forEach((recommendation, index) => {
+const item = document.createElement('div');
+item.className = 'recommendation-item';
+const icon = document.createElement('div');
+icon.className = 'recommendation-icon';
+icon.textContent = index + 1;
+const content = document.createElement('div');
+content.className = 'recommendation-content';
+const title = document.createElement('div');
+title.className = 'recommendation-title';
+title.textContent = recommendation.title;
+const text = document.createElement('p');
+text.textContent = recommendation.content;
+content.appendChild(title);
+content.appendChild(text);
+item.appendChild(icon);
+item.appendChild(content);
+recommendationsList.appendChild(item);
+});
+
+// 資料セクションの追加
+addResourcesSection();
+
+// フィードバックセクションの追加
+addFeedbackSection();
+}
+
+// 資料セクションの追加
+function addResourcesSection() {
+// 資料セクションが存在しなければ作成
+let resourcesCard = document.querySelector('.resources-card');
+if (!resourcesCard) {
+const resultSection = document.getElementById('result-section');
+resourcesCard = document.createElement('div');
+resourcesCard.className = 'card resources-card animate-in';
+resourcesCard.style.animationDelay = '0.5s';
+
+resourcesCard.innerHTML = `
+<div class="resources-section">
+<h3>もっと詳しく知りたい方へ</h3>
+<div class="resource-items">
+<div class="resource-item">
+<div class="resource-icon">📝</div>
+<div class="resource-content">
+<h4>関連note記事</h4>
+<p>「クリニックのIT費用、3つの無駄の見つけ方」</p>
+<a href="#">記事を読む</a>
+</div>
+</div>
+<div class="resource-item">
+<div class="resource-icon">▶️</div>
+<div class="resource-content">
+<h4>YouTube解説</h4>
+<p>「5分でわかるIP電話導入メリット」</p>
+<a href="#">動画を見る</a>
+</div>
+</div>
+<div class="resource-item">
+<div class="resource-icon">📊</div>
+<div class="resource-content">
+<h4>無料ダウンロード</h4>
+<p>「クリニックIT費用削減チェックリスト」</p>
+<a href="#">ダウンロード</a>
+</div>
+</div>
+</div>
+</div>
+`;
+resultSection.appendChild(resourcesCard);
+}
+}
+
+// フィードバックセクションの追加
+function addFeedbackSection() {
+// フィードバックカードが存在しなければ作成
+let feedbackCard = document.querySelector('.feedback-card');
+if (!feedbackCard) {
+const resultSection = document.getElementById('result-section');
+feedbackCard = document.createElement('div');
+feedbackCard.className = 'card feedback-card animate-in';
+feedbackCard.style.animationDelay = '0.6s';
+
+feedbackCard.innerHTML = `
+<h2>あなたの声をお聞かせください</h2>
+<p>このツールを使ってみて、以下のようなことがありましたら、ぜひnoteのコメント欄でお聞かせください：</p>
+<ul>
+<li>診断結果に驚いた点や気づき</li>
+<li>特に関心を持った費用削減分野</li>
+<li>このツールに追加してほしい機能や情報</li>
+<li>IT費用に関して特に困っていること</li>
+</ul>
+<p>皆さんの声をもとに、YouTubeでの解説やセミナー内容を検討していきます。</p>
+
+<div class="optional-survey">
+<h3>よろしければ教えてください（任意）</h3>
+<p>今後のコンテンツ改善のためにお聞かせください：</p>
+<div class="survey-options">
+<div class="survey-question">どの分野に最も関心がありますか？</div>
+<select id="interest-area" class="survey-select">
+<option value="">選択してください</option>
+<option value="communication">通信費の削減</option>
+<option value="system">システム利用料の見直し</option>
+<option value="maintenance">保守・サポート体制の最適化</option>
+<option value="other">その他</option>
+</select>
+</div>
+<button id="survey-submit" class="btn btn-secondary survey-btn">送信する（匿名）</button>
+</div>
+
+<div class="follow-section">
+<h3>最新情報をお届けします</h3>
+<p>IT費用最適化に関する新しい情報や診断ツールの更新は、以下でお知らせします：</p>
+<div class="follow-options">
+<a href="#" class="follow-option">
+<div class="follow-icon">📘</div>
+<div>noteをフォロー</div>
+</a>
+<a href="#" class="follow-option">
+<div class="follow-icon">▶️</div>
+<div>YouTubeチャンネル登録</div>
+</a>
+<a href="#" class="follow-option">
+<div class="follow-icon">🐦</div>
+<div>Twitter/Xをフォロー</div>
+</a>
+</div>
+</div>
+
+<div class="disclaimer">
+<p>※本診断ツールは、一般的なクリニックのIT・通信コストデータに基づく参考値を提示するものです。実際のコスト削減額や最適化方法は状況により異なります。</p>
+</div>
+`;
+resultSection.appendChild(feedbackCard);
+
+// アンケート送信ボタンのイベント
+const surveySubmitBtn = document.getElementById('survey-submit');
+if (surveySubmitBtn) {
+surveySubmitBtn.addEventListener('click', function() {
+alert('ご回答ありがとうございます。今後のコンテンツ改善に役立てます。');
+document.getElementById('interest-area').value = '';
+});
+}
+}
+}
+</script>
+</body>
+</html>
